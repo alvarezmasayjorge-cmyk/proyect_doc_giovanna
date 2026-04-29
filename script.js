@@ -4,7 +4,7 @@
    ================================================================ */
 
 // ── Pega aquí la URL de tu Google Apps Script desplegado ──
-const API_URL = "https://script.google.com/macros/s/AKfycbzW36QLHXm3QfxPh96Wg8LLPJePdxborkcE7cULQNoBmhruESqZqousiEW3iZXmVVhP/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwHfhtqOQtF8DMSA2bmmnw6_n00q9VuYmzpV4TnTnzZvdQmbD3q0LJq1OykDicUjjwF/exec";
 
 // ── Referencias al DOM ──
 const leadsContainer  = document.getElementById("leadsContainer");
