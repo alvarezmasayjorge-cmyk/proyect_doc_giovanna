@@ -258,7 +258,7 @@ function crearTarjeta(lead) {
     <footer class="card-footer">
       ${waURL
         ? `
-            <ahref="${waURL}"
+            <a href="${waURL}"
              target="_blank"
              rel="noopener noreferrer"
              class="btn-whatsapp"
