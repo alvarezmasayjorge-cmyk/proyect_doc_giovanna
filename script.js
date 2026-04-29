@@ -15,7 +15,7 @@ const emptyState      = document.getElementById("emptyState");
 const leadCountNumber = document.getElementById("leadCountNumber");
 
 // Array global para filtrar sin repetir el fetch
-let todosLosLeads = [];
+todosLosLeads = (json.data || []).reverse();
 
 
 /* ────────────────────────────────────────────────────────────────
