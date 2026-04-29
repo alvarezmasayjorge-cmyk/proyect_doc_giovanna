@@ -3,10 +3,8 @@
    VERSIÓN CORREGIDA: renderizado innerHTML + mapeo exacto de columnas
    ================================================================ */
 
-// ── Pega aquí la URL de tu Google Apps Script desplegado ──
 const API_URL = "https://script.google.com/macros/s/AKfycbwHfhtqOQtF8DMSA2bmmnw6_n00q9VuYmzpV4TnTnzZvdQmbD3q0LJq1OykDicUjjwF/exec";
 
-// ── Referencias al DOM ──
 const leadsContainer  = document.getElementById("leadsContainer");
 const searchInput     = document.getElementById("searchInput");
 const searchClear     = document.getElementById("searchClear");
@@ -14,8 +12,7 @@ const statusMessage   = document.getElementById("statusMessage");
 const emptyState      = document.getElementById("emptyState");
 const leadCountNumber = document.getElementById("leadCountNumber");
 
-// Array global para filtrar sin repetir el fetch
-todosLosLeads = json.data || [];
+let todosLosLeads = [];
 
 
 /* ────────────────────────────────────────────────────────────────
@@ -57,7 +54,7 @@ async function cargarLeads() {
     const json = await response.json();
     if (json.status === "error") throw new Error(json.message);
 
-    todosLosLeads = json.data || [];
+    todosLosLeads = (json.data || []).reverse();
     mostrarSpinner(false);
     renderizarTarjetas(todosLosLeads);
     leadCountNumber.textContent = todosLosLeads.length;
@@ -71,12 +68,8 @@ async function cargarLeads() {
 
 /* ────────────────────────────────────────────────────────────────
    3. MAPEO DE CAMPOS
-   El Apps Script ya normaliza y entrega: nombre, telefono,
-   fecha, interes, rango_inversion — pero por si acaso,
-   también leemos las claves crudas del Sheet como fallback.
 ──────────────────────────────────────────────────────────────── */
 function extraerCampos(lead) {
-  // Nombre: el Apps Script entrega "nombre"; fallbacks crudos del Sheet
   const nombre =
     lead.nombre ||
     lead["nombre_completo"] ||
@@ -84,7 +77,6 @@ function extraerCampos(lead) {
     lead["full_name"] ||
     "";
 
-  // Teléfono: el Apps Script entrega "telefono"; fallbacks crudos
   const telefonoCrudo =
     lead.telefono ||
     lead["número_de_teléfono"] ||
@@ -93,21 +85,9 @@ function extraerCampos(lead) {
     "";
 
   const telefono = limpiarTelefono(telefonoCrudo);
-
-  // Fecha
   const fecha = lead.fecha || lead["created_time"] || "";
-
-  // Interés — nombre exacto de la columna tal como viene del Sheet
-  const interes =
-    lead.interes ||
-    lead["¿qué_tan_interesado/a_estás_en_iniciar_un_tratamiento_con_ozonoterapia?"] ||
-    "";
-
-  // Inversión — nombre exacto de la columna
-  const inversion =
-    lead.rango_inversion ||
-    lead["¿en_qué_rango_de_inversión_te_sentirías_cómodo/a_para_mejorar_tu_salud_o_estética?"] ||
-    "";
+  const interes = lead.interes || "";
+  const inversion = lead.rango_inversion || "";
 
   return { nombre, telefono, fecha, interes, inversion };
 }
@@ -115,19 +95,17 @@ function extraerCampos(lead) {
 
 /* ────────────────────────────────────────────────────────────────
    4. LIMPIEZA DE TELÉFONO
-   Entrada real vista en el Sheet: "p:+59170810871"
 ──────────────────────────────────────────────────────────────── */
 function limpiarTelefono(raw) {
   if (!raw) return "";
 
   let num = String(raw)
-    .replace(/^[a-zA-Z]+:/i, "")  // Elimina prefijos: p:, tel:, mob:
-    .replace(/[\s()\-\.]/g, "")   // Elimina espacios, paréntesis, guiones
+    .replace(/^[a-zA-Z]+:/i, "")
+    .replace(/[\s()\-\.]/g, "")
     .trim();
 
   if (!num) return "";
 
-  // Si no empieza con + asume Bolivia
   if (!num.startsWith("+")) {
     num = num.startsWith("591") ? `+${num}` : `+591${num}`;
   }
@@ -151,18 +129,15 @@ function formatearFecha(raw) {
 
 
 /* ────────────────────────────────────────────────────────────────
-   6. LIMPIEZA DE TEXTO DE INTERÉS / INVERSIÓN
-   Convierte "muy_interesado/a_(quiero_empezar_pronto)"
-   → "Muy Interesado"
+   6. LIMPIEZA DE TEXTO
 ──────────────────────────────────────────────────────────────── */
 function limpiarTexto(raw) {
   if (!raw) return "";
   return raw
-    .replace(/\(.*?\)/g, "")       // Elimina todo lo que esté entre paréntesis
-    .replace(/[_\/]/g, " ")        // Guiones bajos y barras → espacio
-    .replace(/\s+/g, " ")          // Espacios múltiples → uno
+    .replace(/\(.*?\)/g, "")
+    .replace(/[_\/]/g, " ")
+    .replace(/\s+/g, " ")
     .trim()
-    // Capitaliza la primera letra de cada palabra
     .replace(/\b\w/g, l => l.toUpperCase());
 }
 
@@ -174,44 +149,37 @@ function obtenerClaseInteres(interes) {
   if (!interes) return "desconocido";
   const t = interes.toLowerCase();
   if (t.includes("muy_interesado") || t.includes("muy interesado") || t.includes("empezar_pronto")) return "alto";
-  if (t.includes("interesado")     || t.includes("más_información") || t.includes("más información"))  return "medio";
-  if (t.includes("explorando")     || t.includes("solo_estoy")      || t.includes("consultando"))       return "bajo";
+  if (t.includes("interesado")     || t.includes("más_información") || t.includes("más información")) return "medio";
+  if (t.includes("explorando")     || t.includes("solo_estoy")      || t.includes("consultando"))      return "bajo";
   return "desconocido";
 }
 
 
 /* ────────────────────────────────────────────────────────────────
    8. CONSTRUCCIÓN HTML DE UNA TARJETA
-   FIX CRÍTICO: se usa innerHTML sobre un <article> creado con
-   createElement — el HTML se parsea correctamente como markup,
-   no como texto plano.
 ──────────────────────────────────────────────────────────────── */
 function crearTarjeta(lead) {
   const { nombre, telefono, fecha, interes, inversion } = extraerCampos(lead);
 
-  const nombreMostrar    = nombre    || "Sin nombre";
-  const interesLimpio    = limpiarTexto(interes);
-  const inversionLimpia  = limpiarTexto(inversion);
-  const fechaLegible     = formatearFecha(fecha);
-  const inicial          = nombreMostrar.charAt(0).toUpperCase();
-  const claseInteres     = obtenerClaseInteres(interes);
+  const nombreMostrar   = nombre   || "Sin nombre";
+  const interesLimpio   = limpiarTexto(interes);
+  const inversionLimpia = limpiarTexto(inversion);
+  const fechaLegible    = formatearFecha(fecha);
+  const inicial         = nombreMostrar.charAt(0).toUpperCase();
+  const claseInteres    = obtenerClaseInteres(interes);
 
-  // Etiqueta del badge según clase
   const labelBadge = {
-    alto:         "Muy Interesado",
-    medio:        "Interesado",
-    bajo:         "Explorando",
-    desconocido:  "—"
+    alto:        "Muy Interesado",
+    medio:       "Interesado",
+    bajo:        "Explorando",
+    desconocido: "—"
   }[claseInteres];
 
-  // URL de WhatsApp — número sin "+"" en la URL
   const mensaje = `Hola ${nombreMostrar}, te escribimos de la clínica de la Dra. Giovana respecto a tu interés en Ozonoterapia. ¿En qué podemos ayudarte?`;
-  const waURL   = telefono
+  const waURL = telefono
     ? `https://wa.me/${telefono.replace("+", "")}?text=${encodeURIComponent(mensaje)}`
     : null;
 
-  // Creamos el elemento y asignamos innerHTML —
-  // esto hace que el navegador parsee el HTML real
   const article = document.createElement("article");
   article.className = "lead-card";
   article.dataset.nombre = nombreMostrar.toLowerCase();
@@ -257,20 +225,8 @@ function crearTarjeta(lead) {
 
     <footer class="card-footer">
       ${waURL
-        ? `
-            <a href="${waURL}"
-             target="_blank"
-             rel="noopener noreferrer"
-             class="btn-whatsapp"
-             aria-label="Contactar a ${escaparHTML(nombreMostrar)} por WhatsApp"
-           >
-             <i class="fa-brands fa-whatsapp btn-whatsapp__icon" aria-hidden="true"></i>
-             <span class="btn-whatsapp__text">Contactar por WhatsApp</span>
-           </a>`
-        : `<button class="btn-whatsapp" disabled style="opacity:0.45;cursor:not-allowed;" aria-label="Sin teléfono disponible">
-             <i class="fa-solid fa-phone-slash btn-whatsapp__icon" aria-hidden="true"></i>
-             <span class="btn-whatsapp__text">Sin teléfono</span>
-           </button>`
+        ? `<a href="${waURL}" target="_blank" rel="noopener noreferrer" class="btn-whatsapp" aria-label="Contactar a ${escaparHTML(nombreMostrar)} por WhatsApp"><i class="fa-brands fa-whatsapp btn-whatsapp__icon" aria-hidden="true"></i><span class="btn-whatsapp__text">Contactar por WhatsApp</span></a>`
+        : `<button class="btn-whatsapp" disabled style="opacity:0.45;cursor:not-allowed;"><i class="fa-solid fa-phone-slash btn-whatsapp__icon" aria-hidden="true"></i><span class="btn-whatsapp__text">Sin teléfono</span></button>`
       }
     </footer>
   `;
@@ -294,7 +250,6 @@ function renderizarTarjetas(leads) {
   leads.forEach((lead, index) => {
     const tarjeta = crearTarjeta(lead);
     leadsContainer.appendChild(tarjeta);
-    // Animación escalonada de entrada
     setTimeout(() => tarjeta.classList.add("card--visible"), index * 60);
   });
 }
@@ -338,7 +293,6 @@ function mostrarError(msg) {
   statusMessage.querySelector(".status-text").textContent = msg;
 }
 
-// Previene XSS con datos de Facebook
 function escaparHTML(str) {
   if (!str) return "";
   return String(str)
