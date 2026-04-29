@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#0f1923" />
+  <meta name="description" content="Dashboard de Gestión de Leads — Clínica Dra. Giovana" />
+  <title>Piso Pélvico · Dra. Giovana</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <span class="header-icon" aria-hidden="true">
+          <i class="fa-solid fa-heart-pulse"></i>
+        </span>
+        <div class="header-text">
+          <h1 class="header-title">Gestión de Leads</h1>
+          <p class="header-subtitle">Dra. Giovana · Piso Pélvico</p>
+        </div>
+      </div>
+      <div class="header-badge" id="leadCount" aria-label="Total de leads">
+        <span id="leadCountNumber">—</span>
+        <span class="badge-label">leads</span>
+      </div>
+    </div>
+
+    <!-- Navegación entre servicios -->
+    <nav class="header-nav">
+      <a href="index.html" class="nav-tab">
+        <i class="fa-solid fa-circle-nodes"></i> Ozono
+      </a>
+      <a href="piso.html" class="nav-tab nav-tab--active">
+        <i class="fa-solid fa-person-dress"></i> Piso Pélvico
+      </a>
+    </nav>
+  </header>
+
+  <section class="search-section" role="search">
+    <div class="search-wrapper">
+      <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+      <input type="search" id="searchInput" class="search-input" placeholder="Buscar por nombre o teléfono…" autocomplete="off" autocorrect="off" spellcheck="false" />
+      <button type="button" id="searchClear" class="search-clear" aria-label="Limpiar búsqueda" hidden>
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+  </section>
+
+  <div id="statusMessage" class="status-message" role="status" aria-live="polite" hidden>
+    <i class="fa-solid fa-circle-notch fa-spin status-icon" aria-hidden="true"></i>
+    <p class="status-text">Cargando leads…</p>
+  </div>
+
+  <main id="leadsContainer" class="leads-container" aria-label="Lista de leads"></main>
+
+  <div id="emptyState" class="empty-state" hidden aria-live="polite">
+    <i class="fa-solid fa-user-slash empty-state__icon" aria-hidden="true"></i>
+    <p class="empty-state__title">Sin resultados</p>
+    <p class="empty-state__subtitle">No se encontraron leads con ese criterio.</p>
+  </div>
+
+  <script src="piso.js"></script>
+</body>
+</html>
