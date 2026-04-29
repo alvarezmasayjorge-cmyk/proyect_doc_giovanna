@@ -775,3 +775,40 @@ img, svg {
     transform: none;
   }
 }
+/* ────────────────────────────────────────────────────────────────
+   NAVEGACIÓN ENTRE SERVICIOS
+──────────────────────────────────────────────────────────────── */
+.header-nav {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md) var(--space-md);
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.nav-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px var(--space-md);
+  border-radius: var(--radius-pill);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.60);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: all var(--transition-fast);
+}
+
+.nav-tab--active {
+  background: rgba(255, 255, 255, 0.20);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.nav-tab:hover:not(.nav-tab--active) {
+  background: rgba(255, 255, 255, 0.13);
+  color: rgba(255, 255, 255, 0.85);
+}
