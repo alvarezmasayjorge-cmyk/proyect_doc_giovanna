@@ -2,7 +2,7 @@
    piso.js — Dashboard de Leads Piso Pélvico | Clínica Dra. Giovana
    ================================================================ */
 
-const API_URL = "https://script.google.com/macros/s/AKfycbxrt7vurcQ-tKbKRt_ceu6L0Ew12nXdUHxTLZLCmHzwE-LXugjmSBK6HK54vlZYkFNd/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwkFs_ilxQOo5Max14Eoi9DhqtmAAEEc-5CB-1PzR5fZ5dgA9gouPMjb4brwKRLG4xW/exec";
 
 const leadsContainer  = document.getElementById("leadsContainer");
 const searchInput     = document.getElementById("searchInput");
