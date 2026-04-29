@@ -1,0 +1,777 @@
+/* ================================================================
+   style.css — Dashboard de Leads | Clínica Dra. Giovana
+   Mobile First · Diseño médico limpio y moderno
+   ================================================================ */
+
+
+/* ────────────────────────────────────────────────────────────────
+   1. TOKENS DE DISEÑO (Custom Properties)
+   Centraliza todos los valores para cambios consistentes.
+──────────────────────────────────────────────────────────────── */
+:root {
+  /* Paleta principal */
+  --color-bg:            #f0f4f8;       /* Gris azulado muy suave — fondo general */
+  --color-surface:       #ffffff;       /* Blanco puro — superficie de tarjetas */
+  --color-surface-hover: #f7fbff;       /* Hover suave sobre tarjetas */
+
+  /* Azul clínico */
+  --color-blue-deep:     #0a3d62;       /* Header, títulos fuertes */
+  --color-blue-mid:      #1a6fa8;       /* Acentos, íconos activos */
+  --color-blue-light:    #d6eaf8;       /* Fondos de badges, campos */
+  --color-blue-pale:     #eaf4fd;       /* Hover muy sutil */
+
+  /* Verde salud / Ozonoterapia */
+  --color-green-deep:    #1a6b47;       /* Texto sobre verde claro */
+  --color-green-mid:     #27ae60;       /* Bordes y acentos verdes */
+  --color-green-light:   #d5f5e3;       /* Fondo badge verde */
+
+  /* WhatsApp — color oficial */
+  --color-whatsapp:      #25D366;
+  --color-whatsapp-dark: #1da851;       /* Hover/active */
+  --color-whatsapp-text: #ffffff;
+
+  /* Badges de nivel de interés */
+  --color-interest-alto-bg:    #fdecea;
+  --color-interest-alto-text:  #c0392b;
+  --color-interest-alto-bord:  #f1948a;
+
+  --color-interest-medio-bg:   #fef5e7;
+  --color-interest-medio-text: #d35400;
+  --color-interest-medio-bord: #f0b27a;
+
+  --color-interest-bajo-bg:    #eafaf1;
+  --color-interest-bajo-text:  #1e8449;
+  --color-interest-bajo-bord:  #82e0aa;
+
+  /* Texto */
+  --color-text-primary:   #1a2a3a;      /* Casi negro azulado */
+  --color-text-secondary: #5a7184;      /* Gris azulado medio */
+  --color-text-muted:     #94aab8;      /* Gris claro para metadatos */
+
+  /* Bordes */
+  --color-border:         #dce8f0;
+  --color-border-focus:   #1a6fa8;
+
+  /* Sombras */
+  --shadow-card:   0 2px 12px rgba(10, 61, 98, 0.08), 0 1px 3px rgba(10, 61, 98, 0.05);
+  --shadow-hover:  0 8px 28px rgba(10, 61, 98, 0.14), 0 2px 8px rgba(10, 61, 98, 0.08);
+  --shadow-search: 0 4px 20px rgba(10, 61, 98, 0.10);
+  --shadow-btn:    0 4px 14px rgba(37, 211, 102, 0.40);
+
+  /* Tipografía */
+  --font-body:    'DM Sans', 'Segoe UI', sans-serif;
+  --font-display: 'DM Serif Display', Georgia, serif;
+
+  /* Espaciado */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+
+  /* Radios */
+  --radius-sm:   8px;
+  --radius-md:   14px;
+  --radius-lg:   20px;
+  --radius-pill: 999px;
+
+  /* Transiciones */
+  --transition-fast:   0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow:   0.40s ease;
+}
+
+
+/* ────────────────────────────────────────────────────────────────
+   2. RESET Y BASE
+──────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  min-height: 100dvh;
+  /* Textura muy sutil — patrón de puntos clínicos */
+  background-image: radial-gradient(circle, #c8dde8 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-attachment: fixed;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+
+/* ────────────────────────────────────────────────────────────────
+   3. HEADER
+──────────────────────────────────────────────────────────────── */
+.site-header {
+  background: linear-gradient(
+    135deg,
+    var(--color-blue-deep)  0%,
+    #0d5291                 50%,
+    #0e6b52                 100%   /* vira a verde oscuro — evoca salud */
+  );
+  padding: var(--space-lg) var(--space-md);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  /* Sombra pronunciada para separarlo del contenido al hacer scroll */
+  box-shadow: 0 4px 20px rgba(10, 61, 98, 0.30);
+}
+
+/* Línea decorativa inferior — detalle refinado */
+.site-header::after {
+  content: '';
+  display: block;
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--color-whatsapp) 0%,
+    var(--color-blue-mid) 60%,
+    transparent 100%
+  );
+  opacity: 0.7;
+}
+
+.header-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+/* Ícono de hoja decorativo */
+.header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+  color: #a8e6c7;            /* Verde suave luminoso sobre el degradado */
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.20);
+}
+
+.header-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 400;          /* DM Serif Display luce mejor en weight normal */
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.header-subtitle {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  margin-top: 1px;
+}
+
+/* Badge contador de leads */
+.header-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(8px);
+  flex-shrink: 0;
+}
+
+#leadCountNumber {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.badge-label {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.60);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+
+/* ────────────────────────────────────────────────────────────────
+   4. BARRA DE BÚSQUEDA
+──────────────────────────────────────────────────────────────── */
+.search-section {
+  padding: var(--space-lg) var(--space-md) var(--space-md);
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Ícono de lupa — decorativo, a la izquierda */
+.search-icon {
+  position: absolute;
+  left: var(--space-md);
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  pointer-events: none;
+  transition: color var(--transition-fast);
+  z-index: 1;
+}
+
+.search-input {
+  width: 100%;
+  padding: 14px var(--space-xl) 14px 44px; /* deja espacio a lupa y botón X */
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-search);
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+  -webkit-appearance: none;        /* Elimina estilo nativo en iOS */
+}
+
+.search-input::placeholder {
+  color: var(--color-text-muted);
+  font-weight: 300;
+}
+
+/* Quitar el "X" nativo en Chrome/Safari */
+.search-input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.search-input:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px rgba(26, 111, 168, 0.12), var(--shadow-search);
+}
+
+.search-input:focus + .search-icon,
+.search-wrapper:focus-within .search-icon {
+  color: var(--color-blue-mid);
+}
+
+/* Botón para limpiar búsqueda */
+.search-clear {
+  position: absolute;
+  right: var(--space-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  background: var(--color-blue-light);
+  color: var(--color-blue-mid);
+  font-size: 0.8rem;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.search-clear:hover {
+  background: var(--color-blue-mid);
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.search-clear:active {
+  transform: scale(0.95);
+}
+
+
+/* ────────────────────────────────────────────────────────────────
+   5. CONTENEDOR DE TARJETAS
+──────────────────────────────────────────────────────────────── */
+.leads-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: 0 var(--space-md) var(--space-xl);
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+
+/* ────────────────────────────────────────────────────────────────
+   6. TARJETA DE LEAD (.lead-card)
+──────────────────────────────────────────────────────────────── */
+.lead-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  /* Animación de entrada — JS añade clase .card--visible */
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity     var(--transition-slow),
+    transform   var(--transition-slow),
+    box-shadow  var(--transition-normal),
+    border-color var(--transition-normal);
+}
+
+/* Estado visible — JS añade esta clase para animar la entrada */
+.lead-card.card--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hover en dispositivos con puntero fino (desktop) */
+@media (hover: hover) {
+  .lead-card:hover {
+    box-shadow: var(--shadow-hover);
+    border-color: var(--color-blue-light);
+    background: var(--color-surface-hover);
+  }
+}
+
+/* Línea de acento superior — marca clínica sutil */
+.lead-card::before {
+  content: '';
+  display: block;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--color-blue-mid) 0%,
+    var(--color-green-mid) 100%
+  );
+}
+
+
+/* ── 6a. CABECERA DE LA TARJETA ── */
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-md) var(--space-sm);
+}
+
+/* Avatar circular con la inicial del nombre */
+.card-avatar {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(
+    135deg,
+    var(--color-blue-mid),
+    var(--color-green-mid)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-initial {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: #ffffff;
+  line-height: 1;
+  user-select: none;
+}
+
+.card-header-info {
+  flex: 1;
+  min-width: 0;                 /* Permite que el texto se trunque */
+}
+
+.card-name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  line-height: 1.25;
+  /* Truncar nombres muy largos en 1 línea */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-date {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin-top: var(--space-xs);
+  font-weight: 400;
+}
+
+.card-date i {
+  font-size: 0.72rem;
+}
+
+
+/* ── 6b. BADGES DE NIVEL DE INTERÉS ── */
+.card-interest-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+
+/* Alto / Muy interesado — rojo suave */
+.card-interest-badge--alto {
+  background: var(--color-interest-alto-bg);
+  color:      var(--color-interest-alto-text);
+  border-color: var(--color-interest-alto-bord);
+}
+
+/* Medio / Interesado — naranja suave */
+.card-interest-badge--medio {
+  background: var(--color-interest-medio-bg);
+  color:      var(--color-interest-medio-text);
+  border-color: var(--color-interest-medio-bord);
+}
+
+/* Bajo / Explorando — verde suave */
+.card-interest-badge--bajo {
+  background: var(--color-interest-bajo-bg);
+  color:      var(--color-interest-bajo-text);
+  border-color: var(--color-interest-bajo-bord);
+}
+
+/* Sin datos */
+.card-interest-badge--desconocido {
+  background: #f4f6f8;
+  color:      var(--color-text-muted);
+  border-color: var(--color-border);
+}
+
+
+/* ── 6c. CUERPO DE LA TARJETA ── */
+.card-body {
+  padding: var(--space-sm) var(--space-md) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* Campo individual (etiqueta + valor) */
+.card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: var(--color-blue-pale);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-left: 3px solid var(--color-blue-light);
+}
+
+.field-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-blue-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.field-label i {
+  font-size: 0.7rem;
+  opacity: 0.85;
+}
+
+.field-value {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+  font-weight: 400;
+}
+
+/* Cuando no hay datos para un campo */
+.field-value--empty {
+  color: var(--color-text-muted);
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+
+/* ── 6d. PIE DE TARJETA ── */
+.card-footer {
+  padding: var(--space-sm) var(--space-md) var(--space-md);
+}
+
+
+/* ────────────────────────────────────────────────────────────────
+   7. BOTÓN DE WHATSAPP
+──────────────────────────────────────────────────────────────── */
+.btn-whatsapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  width: 100%;
+  padding: 15px var(--space-md);     /* Alto generoso para dedo en móvil */
+  background: var(--color-whatsapp);
+  color: var(--color-whatsapp-text);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  box-shadow: var(--shadow-btn);
+  transition:
+    background    var(--transition-fast),
+    box-shadow    var(--transition-fast),
+    transform     var(--transition-fast);
+  /* Mínimo de área táctil recomendado por WCAG */
+  min-height: 48px;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-whatsapp__icon {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.btn-whatsapp__text {
+  line-height: 1;
+}
+
+/* Hover (desktop) */
+@media (hover: hover) {
+  .btn-whatsapp:hover {
+    background: var(--color-whatsapp-dark);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.50);
+    transform: translateY(-1px);
+  }
+}
+
+/* Active / tap en móvil — feedback táctil inmediato */
+.btn-whatsapp:active {
+  background: var(--color-whatsapp-dark);
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.30);
+  transform: scale(0.98) translateY(0);
+}
+
+
+/* ────────────────────────────────────────────────────────────────
+   8. ESTADO DE CARGA (Spinner)
+──────────────────────────────────────────────────────────────── */
+.status-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  padding: var(--space-xl) var(--space-md);
+  text-align: center;
+}
+
+.status-icon {
+  font-size: 2rem;
+  color: var(--color-blue-mid);
+}
+
+.status-text {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  font-weight: 400;
+}
+
+/* Variante de error */
+.status-message--error .status-icon {
+  color: var(--color-interest-alto-text);
+}
+
+.status-message--error .status-text {
+  color: var(--color-interest-alto-text);
+}
+
+
+/* ────────────────────────────────────────────────────────────────
+   9. ESTADO VACÍO (sin resultados)
+──────────────────────────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-xl) var(--space-md);
+  text-align: center;
+}
+
+.empty-state__icon {
+  font-size: 2.5rem;
+  color: var(--color-text-muted);
+  opacity: 0.5;
+  margin-bottom: var(--space-xs);
+}
+
+.empty-state__title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--color-text-secondary);
+  font-weight: 400;
+}
+
+.empty-state__subtitle {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  max-width: 260px;
+  line-height: 1.5;
+}
+
+
+/* ────────────────────────────────────────────────────────────────
+   10. UTILIDADES
+──────────────────────────────────────────────────────────────── */
+
+/* Ocultar visualmente pero mantener accesible para lectores de pantalla */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Elemento oculto — reemplaza el atributo `hidden` de HTML */
+[hidden] {
+  display: none !important;
+}
+
+
+/* ────────────────────────────────────────────────────────────────
+   11. RESPONSIVE — Tablets y Desktop (≥ 520px)
+   El diseño ya es Mobile First; aquí solo ampliamos
+   donde hay espacio extra.
+──────────────────────────────────────────────────────────────── */
+@media (min-width: 520px) {
+
+  .site-header {
+    padding: var(--space-lg) var(--space-xl);
+  }
+
+  .header-title {
+    font-size: 1.55rem;
+  }
+
+  .search-section {
+    padding: var(--space-xl) var(--space-xl) var(--space-md);
+  }
+
+  .leads-container {
+    padding: 0 var(--space-xl) var(--space-xl);
+  }
+
+  .card-header {
+    padding: var(--space-lg) var(--space-lg) var(--space-sm);
+  }
+
+  .card-body {
+    padding: var(--space-sm) var(--space-lg) var(--space-lg);
+    /* En pantallas más anchas, mostramos los campos en fila */
+    flex-direction: row;
+    gap: var(--space-md);
+  }
+
+  .card-field {
+    flex: 1;
+  }
+
+  .card-footer {
+    padding: var(--space-sm) var(--space-lg) var(--space-lg);
+  }
+}
+
+@media (min-width: 720px) {
+  /* En desktop el botón de WhatsApp puede ser más compacto */
+  .btn-whatsapp {
+    font-size: 0.95rem;
+    padding: 13px var(--space-md);
+  }
+}
+
+
+/* ────────────────────────────────────────────────────────────────
+   12. ANIMACIÓN DE ENTRADA DE TARJETAS
+   JS añade la clase .card--visible con un pequeño delay
+   escalonado para que las tarjetas aparezcan en cascada.
+──────────────────────────────────────────────────────────────── */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reducir movimiento para usuarios que lo prefieren */
+@media (prefers-reduced-motion: reduce) {
+  .lead-card {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}

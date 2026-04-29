@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#0f1923" />
+  <meta name="description" content="Dashboard de Gestión de Leads — Clínica Dra. Giovana" />
+  <title>Leads · Dra. Giovana</title>
+
+  <!-- ── Google Fonts: DM Sans (cuerpo) + DM Serif Display (títulos) ── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- ── Font Awesome 6 (iconos) ── -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+
+  <!-- ── Estilos propios ── -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <span class="header-icon" aria-hidden="true">
+          <i class="fa-solid fa-leaf"></i>
+        </span>
+        <div class="header-text">
+          <h1 class="header-title">Gestión de Leads</h1>
+          <p class="header-subtitle">Dra. Giovana · Ozonoterapia</p>
+        </div>
+      </div>
+      <!-- Contador de leads (JS lo actualizará) -->
+      <div class="header-badge" id="leadCount" aria-label="Total de leads">
+        <span id="leadCountNumber">—</span>
+        <span class="badge-label">leads</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════
+       BARRA DE BÚSQUEDA
+  ══════════════════════════════════════════ -->
+  <section class="search-section" role="search" aria-label="Buscar leads">
+    <div class="search-wrapper">
+      <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+      <input
+        type="search"
+        id="searchInput"
+        class="search-input"
+        placeholder="Buscar por nombre o teléfono…"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+      />
+      <!-- Botón para limpiar búsqueda (JS lo activa) -->
+      <button
+        type="button"
+        id="searchClear"
+        class="search-clear"
+        aria-label="Limpiar búsqueda"
+        hidden
+      >
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       ESTADO DE CARGA / ERROR (oculto al inicio)
+       JS alternará su visibilidad
+  ══════════════════════════════════════════ -->
+  <div id="statusMessage" class="status-message" role="status" aria-live="polite" hidden>
+    <i class="fa-solid fa-circle-notch fa-spin status-icon" aria-hidden="true"></i>
+    <p class="status-text">Cargando leads…</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       CONTENEDOR PRINCIPAL DE TARJETAS
+       JS inyectará aquí las tarjetas dinámicas.
+       La tarjeta de abajo es solo un ejemplo visual
+       (hardcoded) y JS la reemplazará al cargar.
+  ══════════════════════════════════════════ -->
+  <main id="leadsContainer" class="leads-container" aria-label="Lista de leads">
+
+    <!-- ─── TARJETA DE EJEMPLO (estructura de referencia) ─── -->
+    <article class="lead-card" data-id="ejemplo">
+
+      <!-- Cabecera de la tarjeta -->
+      <header class="card-header">
+        <div class="card-avatar" aria-hidden="true">
+          <!-- Inicial del nombre — JS la generará dinámicamente -->
+          <span class="avatar-initial">M</span>
+        </div>
+        <div class="card-header-info">
+          <h2 class="card-name">María Fernanda López</h2>
+          <!-- Fecha / hora del lead -->
+          <time class="card-date" datetime="2025-06-15T10:30:00">
+            <i class="fa-regular fa-clock" aria-hidden="true"></i>
+            15 Jun 2025 · 10:30 AM
+          </time>
+        </div>
+        <!-- Indicador visual de nivel de interés -->
+        <span class="card-interest-badge card-interest-badge--alto" aria-label="Interés alto">
+          Alto
+        </span>
+      </header>
+
+      <!-- Cuerpo de la tarjeta -->
+      <div class="card-body">
+
+        <!-- Etiqueta: Nivel de Interés -->
+        <div class="card-field">
+          <span class="field-label">
+            <i class="fa-solid fa-fire-flame-curved" aria-hidden="true"></i>
+            Nivel de Interés
+          </span>
+          <span class="field-value">
+            Muy interesada, busca comenzar pronto
+          </span>
+        </div>
+
+        <!-- Etiqueta: Rango de Inversión -->
+        <div class="card-field">
+          <span class="field-label">
+            <i class="fa-solid fa-circle-dollar-to-slot" aria-hidden="true"></i>
+            Rango de Inversión
+          </span>
+          <span class="field-value">
+            Bs. 500 – Bs. 1.000
+          </span>
+        </div>
+
+      </div>
+
+      <!-- Pie de la tarjeta: acción principal -->
+      <footer class="card-footer">
+        
+          href="https://wa.me/59170000000?text=Hola%20Mar%C3%ADa%20Fernanda%2C%20soy%20del%20equipo%20de%20la%20Dra.%20Giovana..."
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-whatsapp"
+          aria-label="Contactar a María Fernanda López por WhatsApp"
+        >
+          <i class="fa-brands fa-whatsapp btn-whatsapp__icon" aria-hidden="true"></i>
+          <span class="btn-whatsapp__text">Contactar por WhatsApp</span>
+        </a>
+      </footer>
+
+    </article>
+    <!-- ─── FIN tarjeta de ejemplo ─── -->
+
+  </main>
+
+  <!-- ══════════════════════════════════════════
+       MENSAJE CUANDO NO HAY RESULTADOS (JS lo muestra)
+  ══════════════════════════════════════════ -->
+  <div id="emptyState" class="empty-state" hidden aria-live="polite">
+    <i class="fa-solid fa-user-slash empty-state__icon" aria-hidden="true"></i>
+    <p class="empty-state__title">Sin resultados</p>
+    <p class="empty-state__subtitle">No se encontraron leads con ese criterio de búsqueda.</p>
+  </div>
+
+  <!-- ── Lógica principal (al final del body para mejor rendimiento) ── -->
+  <script src="script.js"></script>
+
+</body>
+</html>
